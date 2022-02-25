@@ -6,6 +6,7 @@ __pycache__/
 
 */.idea/
 */__pycache__/
+*/data/*
 *.jpg
 *.jpeg
 # C extensions
