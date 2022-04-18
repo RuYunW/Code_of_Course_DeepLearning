@@ -3,12 +3,10 @@
   "train_label_path": "./data/train-labels.idx1-ubyte",
   "test_img_path": "./data/t10k-images.idx3-ubyte",
   "test_label_path": "./data/t10k-labels.idx1-ubyte",
+  "checkpoint_path": "/home/wql/contest/wry/code_of_course_deep_learning/1-number_classification/checkpoints/2022-04-18 07:47:57/MNIST_acc_0.980617105960846",
 
-  "save_model_dir": "model/",
-
-  "img_size": 100,
-  "num_epoch": 2,
-  "batch_size": 32,
+  "num_epoch": 10,
+  "batch_size": 64,
   "val_num": 5000,
   "lr": 0.001,
   "num_print": 100

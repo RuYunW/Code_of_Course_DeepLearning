@@ -32,19 +32,21 @@ class BatchData(Dataset):
 
 
 
-def eval(model, val_loader):
+def eval(model, criteria, val_loader):
     model.eval()
     eval_acc_list = []
+    eval_loss_list = []
     for eval_batch in val_loader:
         output = model(eval_batch)
-
+        eval_loss = criteria(output, eval_batch['label'])
         _, prediction = torch.max(output, 1)
         correct = (prediction == eval_batch['label']).sum()
         eval_acc = correct.float() / len(eval_batch['label'])
         eval_acc_list.append(eval_acc.cpu())
+        eval_loss_list.append(eval_loss.item())
     eval_acc = np.array(eval_acc_list).mean()
-
-    return eval_acc
+    eval_loss = np.array(eval_loss_list).mean()
+    return float(eval_acc), float(eval_loss)
 
 
 def create_dir_not_exist(path):

@@ -7,8 +7,9 @@ import json
 from utils import read_data, BatchData, eval, create_dir_not_exist
 from model import SimpleCNN
 from torch.nn import CrossEntropyLoss
-from torch.optim import AdamW
+from torch.optim import Adam
 from tqdm import tqdm
+import pickle as pkl
 
 
 torch.manual_seed(1)
@@ -52,18 +53,23 @@ val_loader = DataLoader(val_dataset, shuffle=False, batch_size=batch_size)
 model = SimpleCNN()
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 model.to(device)
+print(model)
+logging.info(model)
 
 criteria = CrossEntropyLoss()
-optimizer = AdamW(model.parameters(), lr=lr)
+optimizer = Adam(model.parameters(), lr=lr)
 
 logging.info(conf)
 logging.info(optimizer)
-model_save_dir = 'model/' + time_flag + '/'
+model_save_dir = 'checkpoints/' + time_flag + '/'
 create_dir_not_exist(model_save_dir)
 logging.info('Model will be saved into: ' + model_save_dir)
 print('Model will be saved into: ' + model_save_dir)
 
+
 val_acc = 0
+train_acc = 0
+results = {'train_acc': [], 'val_acc': [], 'train_loss': [], 'val_loss': []}
 ## Train
 for epoch in tqdm(range(num_epoch)):
     # train
@@ -86,18 +92,25 @@ for epoch in tqdm(range(num_epoch)):
             logging.info(train_info)
 
     # val
-    val_acc = eval(model, val_loader)
-    val_info = 'Epoch: {} / {}|    Eval Acc: {} % |'.format(epoch, num_epoch, val_acc*100)
+    val_acc, val_loss = eval(model, criteria, val_loader)
+    results['train_acc'].append(train_acc.cpu())
+    results['train_loss'].append(loss.item())
+    results['val_acc'].append(val_acc)
+    results['val_loss'].append(val_loss)
+
+    val_info = 'Epoch: {} / {}|    Eval: |    Acc: {} % |    Loss: {}'.format(
+        epoch, num_epoch, float('%.2f' % (val_acc*100)), float('%.2f' % val_loss))
     print(val_info)
     logging.info(val_info)
     model.train()
+
 model_name = 'MNIST_acc_' + str(val_acc)
 model_path = model_save_dir + model_name
 state = {'model': model.state_dict(), 'optimizer': optimizer.state_dict(), 'lr': lr}
 torch.save(state, model_path)
 logging.info('Model has been saved into: ' + model_path)
 
-
-
-
-
+# save results for plt
+results_save_path = './log/results_' + time_flag + '.pkl'
+with open(results_save_path, 'wb') as f_results:
+    pkl.dump(results, f_results)
