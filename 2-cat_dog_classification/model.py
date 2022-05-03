@@ -26,6 +26,4 @@ class SimpleCNN(nn.Module):
         x = input['tens']
         x = self.cnn(x)
         output = self.fc(x)
-        # print(output)
-        # exit()
         return output

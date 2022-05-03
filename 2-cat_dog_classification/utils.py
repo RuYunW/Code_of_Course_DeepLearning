@@ -33,19 +33,13 @@ class BatchData(Dataset):
         return img_info
 
     def transfer_img(self, img_path):
-        # try:
         mode = Image.open(img_path).convert('RGB')
-        # except:
-        #     return None
         input_transform = transforms.Compose([
             transforms.Resize((self.img_size, self.img_size)),
             transforms.ToTensor(),
         ])
         torch_img = input_transform(mode)
         mode.close()
-        # print(torch_img)
-        # print(torch_img.shape)
-        # exit()
         return torch_img
 
 
