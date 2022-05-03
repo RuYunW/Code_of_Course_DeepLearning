@@ -1,0 +1,13 @@
+{
+  "cat_data_dir": "/home/wql/contest/wry/code_of_course_deep_learning/2-cat_dog_classification/data/PetImages/Cat/",
+  "dog_data_dir": "/home/wql/contest/wry/code_of_course_deep_learning/2-cat_dog_classification/data/PetImages/Dog/",
+
+  "num_epochs": 10,
+  "batch_size": 256,
+  "lr": 0.001,
+  "img_size": 112,
+  "num_train": 20000,
+  "num_val": 2500,
+  "num_test": 2500,
+  "num_print_step": 10
+}
